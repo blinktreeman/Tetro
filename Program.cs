@@ -3,9 +3,9 @@
 using myNamespace;
 
 // Game field
-int[,] gameField = new int[10, 10];
+int[,] gameField = new int[15, 15];
 
-for (int k = 0; k < 5; k++)
+for (int k = 0; k < 50; k++)
 {
     // Стартовая позиция для фигуры
     int coordinateX = gameField.GetLength(1) / 2 - 2;
@@ -21,10 +21,45 @@ for (int k = 0; k < 5; k++)
         }
     }
 
+    Random rand = new Random();
+
     // Перемещаем вниз
     while (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down"))
     {
+        /*
+        Task.Factory.StartNew(() =>
+        {
+            while (Console.ReadKey().Key != ConsoleKey.Escape) ;
+            //exit = true;
+        });
+        */
+
         await Task.Delay(500);
+
+        switch (rand.Next(3))
+        {
+            case 0:
+            {
+                if (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "left"))
+                {
+                    gameField = myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
+                    coordinateX --;
+                    gameField = myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
+                }
+                break;
+            }
+            case 1:
+            {
+                if (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "right"))
+                {
+                    gameField = myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
+                    coordinateX ++;
+                    gameField = myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
+                }
+                break;
+            }
+            default: break;
+        }
 
         // Затираем фигуру
         gameField = myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);

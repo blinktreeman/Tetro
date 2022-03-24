@@ -23,11 +23,11 @@ namespace myNamespace
         public static void ShowArray(int[,] inputArray)
         {
             Console.Clear();
-            for (int i = 0; i < inputArray.GetLength(0); i++)
+            for (int i = 2; i < inputArray.GetLength(0); i++)
             {
                 for (int j = 0; j < inputArray.GetLength(1); j++)
                     if (inputArray[i, j] != 0) Console.Write(inputArray[i, j]);
-                    else Console.Write(" ");
+                    else Console.Write(".");
                 Console.WriteLine();
             }
         }
@@ -62,10 +62,12 @@ namespace myNamespace
             {
                 case "left":
                     {
+                        if (cX == 0) return false;
                         break;
                     }
                 case "right":
                     {
+                        if (cX + figure.GetLength(1) == field.GetLength(1)) return false;
                         break;
                     }
                 case "down":
@@ -74,12 +76,14 @@ namespace myNamespace
                         if (cY == field.GetLength(0) - figure.GetLength(0)) return false;
                         for (int j = 0; j < figure.GetLength(1); j++)
                         {
-                            // Для каждого j-того элемента нижней строки
-                            // Если элемент нижней строки фигуры не равен нулю, и
-                            // элемент игрового поля следующей строки не равен нулю
-                            // перемещение невозможно
-                            if (figure[figure.GetLength(0) - 1, j] != 0 && 
-                                    field[cY + figure.GetLength(0), cX + j] != 0) return false;
+                            // Для каждого j-того столбца
+                            // устанавливаем значение последней строки
+                            int i = figure.GetLength(0) - 1;
+                            // Определяем первый не нулевой элемент столбца фигуры снизу
+                            while (figure[i, j] == 0) i--;
+                            // Если значение в следующей строке игрового поля от первого значащего 
+                            // элемента не ноль, перемещение невозможно
+                            if (field[cY + i + 1, cX + j] != 0) return false;
                         }
                         break;
                     }
