@@ -73,7 +73,17 @@ namespace myNamespace
                 case "down":
                     {
                         // Если достигнут конец массива (дно поля)
-                        if (cY == field.GetLength(0) - figure.GetLength(0)) return false;
+                        if (cY >= field.GetLength(0) - figure.GetLength(0)) 
+                        {
+                            //int temp = 0;
+                            // Из-за шестерки
+                            for (int j = 0; j < figure.GetLength(1); j++)
+                            {
+                                //temp += field[field.GetLength(0) - 1, cX + j];
+                                if (field[field.GetLength(0) - 1, cX + j] != 0) return false;
+                            }
+                            //if (temp != 0) return false;
+                        }
                         for (int j = 0; j < figure.GetLength(1); j++)
                         {
                             // Для каждого j-того столбца
