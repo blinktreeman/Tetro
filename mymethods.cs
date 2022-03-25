@@ -26,6 +26,7 @@ namespace myNamespace
             for (int i = 2; i < inputArray.GetLength(0); i++)
             {
                 for (int j = 0; j < inputArray.GetLength(1); j++)
+                    //if (inputArray[i, j] != 0) Console.Write("█");
                     if (inputArray[i, j] != 0) Console.Write(inputArray[i, j]);
                     else Console.Write(" ");
                 Console.WriteLine();
@@ -56,13 +57,38 @@ namespace myNamespace
             return field;
         }
 
+        public static int[,] RotateFigure(int[,] figure)
+        {
+            int[,] tempArray = new int[figure.GetLength(1), figure.GetLength(0)];
+            for (int i = 0; i < figure.GetLength(1); i++)
+            {
+                for (int j = 0; j < figure.GetLength(0); j++)
+                {
+                    tempArray[i, j] = figure[figure.GetLength(0) - 1 - j, i];
+                }
+            }
+            return tempArray;
+        }
+
+        public static bool FigureCanRotate(int[,] field, int[,] figure, int cX, int cY)
+        {
+            return true;
+        }
+
         public static bool FigureCanMove(int[,] field, int[,] figure, int cX, int cY, string direct)
         {
             switch (direct)
             {
                 case "left":
                     {
-                        if (cX == 0) return false;
+                        if (cX == 0)
+                        {
+                            // Из-за шестерки
+                            for (int i = 0; i < figure.GetLength(0); i++)
+                            {
+                                if (field[cY + i, 0] != 0) return false;
+                            }
+                        }
                         for (int i = 0; i < figure.GetLength(0); i++)
                         {
                             // Для каждой i-той строки
@@ -78,7 +104,14 @@ namespace myNamespace
                     }
                 case "right":
                     {
-                        if (cX + figure.GetLength(1) == field.GetLength(1)) return false;
+                        if (cX + figure.GetLength(1) == field.GetLength(1))
+                        {
+                            // Из-за шестерки
+                            for (int i = 0; i < figure.GetLength(0); i++)
+                            {
+                                if (field[cY + i,figure.GetLength(1) - 1] != 0) return false;
+                            }
+                        }
                         for (int i = 0; i < figure.GetLength(0); i++)
                         {
                             // Для каждой i-той строки

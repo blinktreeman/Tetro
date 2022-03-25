@@ -1,6 +1,9 @@
 ﻿// One more tetris game
 
 using myNamespace;
+{
+    
+};
 
 // Game field
 int[,] gameField = new int[15, 15];
@@ -11,16 +14,8 @@ for (int k = 0; k < 50; k++)
     int coordinateX = gameField.GetLength(1) / 2 - 2;
     int coordinateY = 0;
 
-    // Выводим фигуру на экран
     int[,] currentFigure = myTetro.GetGameFigure();
-    for (int i = 0; i < currentFigure.GetLength(0); i++)
-    {
-        for (int j = 0; j < currentFigure.GetLength(1); j++)
-        {
-            gameField[coordinateY + i, coordinateX + j] = currentFigure[i, j];
-        }
-    }
-
+    
     Random rand = new Random();
 
     // Перемещаем вниз
@@ -36,15 +31,15 @@ for (int k = 0; k < 50; k++)
 
         await Task.Delay(200);
 
-        switch (rand.Next(3))
+        switch (rand.Next(4))
         {
             case 0:
             {
                 if (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "left"))
                 {
-                    gameField = myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
+                    myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
                     coordinateX --;
-                    gameField = myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
+                    myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
                 }
                 break;
             }
@@ -52,26 +47,36 @@ for (int k = 0; k < 50; k++)
             {
                 if (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "right"))
                 {
-                    gameField = myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
+                    myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
                     coordinateX ++;
-                    gameField = myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
+                    myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
+                }
+                break;
+            }
+            case 2:
+            {
+                if (myTetro.FigureCanRotate(gameField, currentFigure, coordinateX, coordinateY))
+                {
+                    myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
+                    currentFigure = myTetro.RotateFigure(currentFigure);
+                    myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
                 }
                 break;
             }
             default: break;
         }
 
+        // Если фигура сдвинулась по горизонтали, проверяем может ли она двигаться вниз
+        // если нет, завершаем итерацию
         if (!myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down")) continue;
 
         // Затираем фигуру
-        gameField = myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
+        myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
 
         // Рисуем с новыми координатами
         coordinateY++;
-        gameField = myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
+        myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
 
         myTetro.ShowArray(gameField);
     }
 }
-
-
