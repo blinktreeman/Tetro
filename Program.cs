@@ -34,7 +34,7 @@ for (int k = 0; k < 50; k++)
         });
         */
 
-        await Task.Delay(500);
+        await Task.Delay(200);
 
         switch (rand.Next(3))
         {
@@ -60,6 +60,8 @@ for (int k = 0; k < 50; k++)
             }
             default: break;
         }
+
+        if (!myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down")) continue;
 
         // Затираем фигуру
         gameField = myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
