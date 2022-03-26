@@ -17,23 +17,20 @@ for (int k = 0; k < 50; k++)
     int[,] currentFigure = myTetro.GetGameFigure();
     
     Random rand = new Random();
+    //ConsoleKeyInfo cki = new ConsoleKeyInfo();
 
     // Перемещаем вниз
     while (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down"))
     {
-        /*
-        Task.Factory.StartNew(() =>
+        ConsoleKeyInfo cki = new ConsoleKeyInfo();
+        //var consoleKeyTask = Task<ConsoleKeyInfo>.Run(() => myTetro.MonitorKeypress());
+        //cki = consoleKeyTask.Result;
+        if (Console.KeyAvailable) cki = Console.ReadKey(true);
+        await Task.Delay(500);
+        
+        switch (cki.Key)
         {
-            while (Console.ReadKey().Key != ConsoleKey.Escape) ;
-            //exit = true;
-        });
-        */
-
-        await Task.Delay(200);
-
-        switch (rand.Next(4))
-        {
-            case 0:
+            case ConsoleKey.LeftArrow:
             {
                 if (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "left"))
                 {
@@ -43,7 +40,7 @@ for (int k = 0; k < 50; k++)
                 }
                 break;
             }
-            case 1:
+            case ConsoleKey.RightArrow:
             {
                 if (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "right"))
                 {
@@ -53,7 +50,7 @@ for (int k = 0; k < 50; k++)
                 }
                 break;
             }
-            case 2:
+            case ConsoleKey.UpArrow:
             {
                 if (myTetro.FigureCanRotate(gameField, currentFigure, coordinateX, coordinateY))
                 {

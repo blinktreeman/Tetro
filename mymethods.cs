@@ -23,12 +23,14 @@ namespace myNamespace
         public static void ShowArray(int[,] inputArray)
         {
             Console.Clear();
-            for (int i = 2; i < inputArray.GetLength(0); i++)
+            for (int i = 1; i < inputArray.GetLength(0); i++)
             {
+                Console.Write("|");
                 for (int j = 0; j < inputArray.GetLength(1); j++)
                     //if (inputArray[i, j] != 0) Console.Write("█");
                     if (inputArray[i, j] != 0) Console.Write(inputArray[i, j]);
                     else Console.Write(" ");
+                Console.Write("|");
                 Console.WriteLine();
             }
         }
@@ -39,7 +41,7 @@ namespace myNamespace
             {
                 for (int j = 0; j < figure.GetLength(1); j++)
                 {
-                    field[cY + i, cX + j] = 0;
+                    if (figure[i, j] != 0) field[cY + i, cX + j] = 0;
                 }
             }
             return field;
@@ -72,8 +74,36 @@ namespace myNamespace
 
         public static bool FigureCanRotate(int[,] field, int[,] figure, int cX, int cY)
         {
+            HideFigure(field, figure, cX, cY);
+            figure = RotateFigure(figure);
+            // Если при повороте фигуры она выходит за границы поля
+            if (cX + figure.GetLength(1) > field.GetLength(1) ||
+                cY + figure.GetLength(0) > field.GetLength(0)) return false;
+            // Перемножаем каждый элемент матрицы на элемент поля на 
+            // котором он должен разместиться.
+            // Если произведение отлично от нуля, разворот не возможен.
+            for (int i = 0; i < figure.GetLength(0); i++)
+            {
+                for (int j = 0; j < figure.GetLength(1); j++)
+                {
+                    if (figure[i, j] * field[cY + i, cX + j] != 0) return false;
+                }
+            }
             return true;
         }
+
+        /*
+        public static ConsoleKeyInfo MonitorKeypress()
+        {
+            ConsoleKeyInfo innercki = new ConsoleKeyInfo();
+            do innercki = Console.ReadKey(true); while (innercki.Key != ConsoleKey.UpArrow &&
+                                                        innercki.Key != ConsoleKey.LeftArrow &&
+                                                        innercki.Key != ConsoleKey.RightArrow
+                                                        );
+            //Task.Delay(500);
+            return innercki;
+        }
+        */
 
         public static bool FigureCanMove(int[,] field, int[,] figure, int cX, int cY, string direct)
         {
@@ -86,7 +116,7 @@ namespace myNamespace
                             // Из-за шестерки
                             for (int i = 0; i < figure.GetLength(0); i++)
                             {
-                                if (field[cY + i, 0] != 0) return false;
+                                if (figure[i, 0] != 0) return false; // field (cY + i)
                             }
                         }
                         for (int i = 0; i < figure.GetLength(0); i++)
@@ -109,7 +139,7 @@ namespace myNamespace
                             // Из-за шестерки
                             for (int i = 0; i < figure.GetLength(0); i++)
                             {
-                                if (field[cY + i,figure.GetLength(1) - 1] != 0) return false;
+                                if (field[cY + i, cX + figure.GetLength(1) - 1] != 0) return false;
                             }
                         }
                         for (int i = 0; i < figure.GetLength(0); i++)
@@ -128,7 +158,7 @@ namespace myNamespace
                 case "down":
                     {
                         // Если достигнут конец массива (дно поля)
-                        if (cY >= field.GetLength(0) - figure.GetLength(0)) 
+                        if (cY >= field.GetLength(0) - figure.GetLength(0))
                         {
                             // Из-за шестерки
                             for (int j = 0; j < figure.GetLength(1); j++)
@@ -136,16 +166,18 @@ namespace myNamespace
                                 if (field[field.GetLength(0) - 1, cX + j] != 0) return false;
                             }
                         }
-                        for (int j = 0; j < figure.GetLength(1); j++)
+                        HideFigure(field, figure, cX, cY);
+                        for (int i = 0; i < figure.GetLength(0); i++)
                         {
-                            // Для каждого j-того столбца
-                            // устанавливаем значение последней строки
-                            int i = figure.GetLength(0) - 1;
-                            // Определяем первый не нулевой элемент столбца фигуры снизу
-                            while (figure[i, j] == 0 && i > 0) i--;
-                            // Если значение в следующей строке игрового поля от первого значащего 
-                            // элемента не ноль, перемещение невозможно
-                            if (field[cY + i + 1, cX + j] != 0) return false;
+                            for (int j = 0; j < figure.GetLength(1); j++)
+                            {
+                                if (cY + figure.GetLength(0) < field.GetLength(0) &&    // Из-за шестерки
+                                        figure[i, j] * field[cY + i + 1, cX + j] != 0) 
+                                {
+                                    ShowFigure(field, figure, cX, cY);
+                                    return false;
+                                }
+                            }
                         }
                         break;
                     }
