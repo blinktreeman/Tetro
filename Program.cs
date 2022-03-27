@@ -16,10 +16,8 @@ for (int k = 0; k < 50; k++)
     // Стартовая позиция для фигуры
     int coordinateX = gameField.GetLength(1) / 2 - 2;
     int coordinateY = 0;
-
+    // Получаем случайную фигуру
     int[,] currentFigure = myTetro.GetGameFigure();
-
-    Random rand = new Random();
 
     // Перемещаем вниз
     while (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down"))
@@ -29,7 +27,6 @@ for (int k = 0; k < 50; k++)
             ConsoleKeyInfo cki = new ConsoleKeyInfo();
             await Task.Delay(20);
             if (Console.KeyAvailable) cki = Console.ReadKey(true);
-
             switch (cki.Key)
             {
                 case ConsoleKey.LeftArrow:
@@ -65,23 +62,19 @@ for (int k = 0; k < 50; k++)
                 default: break;
             }
         }
-
         // Если фигура сдвинулась по горизонтали, проверяем может ли она двигаться вниз
         // если нет, завершаем итерацию
         if (!myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down")) continue;
-
         // Затираем фигуру
         myTetro.HideFigure(gameField, currentFigure, coordinateX, coordinateY);
-
         // Рисуем с новыми координатами
         coordinateY++;
         myTetro.ShowFigure(gameField, currentFigure, coordinateX, coordinateY);
-
         myTetro.ShowArray(gameField);
     }
 
     int tempRowNumber = gameField.GetLength(0) - 1;
-    
+    // Удаляем собраные строки
     for (int i = gameField.GetLength(0) - 1; i >= 0; i--)
     {
         bool rowComplete = true;
