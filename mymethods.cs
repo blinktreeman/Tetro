@@ -1,9 +1,27 @@
-
-
 namespace myNamespace
 {
     public class myTetro
     {
+        // Show game field
+        public static void ShowPlayground(int sizeX, int sizeY)
+        {
+            for(int i = 0; i < sizeX; i++)
+            {
+                Console.Write("|");
+                for(int j = 0; j < sizeY; j++)
+                {
+                    Console.Write(" ");
+                }
+                Console.WriteLine("|");
+            }
+            for(int i = 0; i < sizeX + 2; i++) Console.Write("-");
+        }
+
+        public static void ShowResult(int result, int fieldSize)
+        {
+            Console.SetCursorPosition(0, fieldSize + 1);
+            Console.WriteLine($"Собрано рядов: {result}");
+        }
         // Get game figures
         public static int[,] GetGameFigure()
         {
@@ -19,22 +37,18 @@ namespace myNamespace
                 default: return new int[,] { { 0, 7, 0 }, { 7, 7, 7 } };
             }
         }
-
         public static void ShowArray(int[,] inputArray)
         {
-            Console.SetCursorPosition(0, 0);
-            for (int i = 1; i < inputArray.GetLength(0); i++)
+            for (int i = 0; i < inputArray.GetLength(0); i++)
             {
-                Console.Write("|");
+                Console.SetCursorPosition(1, i);
                 for (int j = 0; j < inputArray.GetLength(1); j++)
                     if (inputArray[i, j] != 0) Console.Write("█");
                     //if (inputArray[i, j] != 0) Console.Write(inputArray[i, j]);
                     else Console.Write(".");
-                Console.Write("|");
                 Console.WriteLine();
             }
         }
-
         public static int[,] HideFigure(int[,] field, int[,] figure, int cX, int cY)
         {
             for (int i = 0; i < figure.GetLength(0); i++)
@@ -46,7 +60,6 @@ namespace myNamespace
             }
             return field;
         }
-
         public static int[,] ShowFigure(int[,] field, int[,] figure, int cX, int cY)
         {
             for (int i = 0; i < figure.GetLength(0); i++)
@@ -58,7 +71,6 @@ namespace myNamespace
             }
             return field;
         }
-
         public static int[,] RotateFigure(int[,] figure)
         {
             int[,] tempArray = new int[figure.GetLength(1), figure.GetLength(0)];
@@ -71,7 +83,6 @@ namespace myNamespace
             }
             return tempArray;
         }
-
         public static bool FigureCanRotate(int[,] field, int[,] figure, int cX, int cY)
         {
             HideFigure(field, figure, cX, cY);
@@ -91,20 +102,6 @@ namespace myNamespace
             }
             return true;
         }
-
-        /*
-        public static ConsoleKeyInfo MonitorKeypress()
-        {
-            ConsoleKeyInfo innercki = new ConsoleKeyInfo();
-            do innercki = Console.ReadKey(true); while (innercki.Key != ConsoleKey.UpArrow &&
-                                                        innercki.Key != ConsoleKey.LeftArrow &&
-                                                        innercki.Key != ConsoleKey.RightArrow
-                                                        );
-            //Task.Delay(500);
-            return innercki;
-        }
-        */
-
         public static bool FigureCanMove(int[,] field, int[,] figure, int cX, int cY, string direct)
         {
             switch (direct)

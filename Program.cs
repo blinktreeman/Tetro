@@ -6,6 +6,11 @@ Console.Clear();
 // Game field
 int[,] gameField = new int[15, 15];
 
+myTetro.ShowPlayground(gameField.GetLength(1), gameField.GetLength(0));
+myTetro.ShowResult(0, gameField.GetLength(0));
+
+int rowsComplete = 0;
+
 for (int k = 0; k < 50; k++)
 {
     // Стартовая позиция для фигуры
@@ -15,7 +20,6 @@ for (int k = 0; k < 50; k++)
     int[,] currentFigure = myTetro.GetGameFigure();
 
     Random rand = new Random();
-    //ConsoleKeyInfo cki = new ConsoleKeyInfo();
 
     // Перемещаем вниз
     while (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down"))
@@ -25,7 +29,7 @@ for (int k = 0; k < 50; k++)
             ConsoleKeyInfo cki = new ConsoleKeyInfo();
             await Task.Delay(20);
             if (Console.KeyAvailable) cki = Console.ReadKey(true);
-            
+
             switch (cki.Key)
             {
                 case ConsoleKey.LeftArrow:
@@ -75,4 +79,26 @@ for (int k = 0; k < 50; k++)
 
         myTetro.ShowArray(gameField);
     }
+
+    int tempRowNumber = gameField.GetLength(0) - 1;
+    
+    for (int i = gameField.GetLength(0) - 1; i >= 0; i--)
+    {
+        bool rowComplete = true;
+        for (int j = 0; j < gameField.GetLength(1); j++)
+        {
+            //Console.Write("dasfa");
+            if (gameField[i, j] == 0) rowComplete = false;
+        }
+        if (!rowComplete)
+        {
+            for (int m = 0; m < gameField.GetLength(1); m++)
+            {
+                gameField[tempRowNumber, m] = gameField[i, m];
+            }
+            tempRowNumber--;
+        }
+        else myTetro.ShowResult(++rowsComplete, gameField.GetLength(0));
+    }
+    myTetro.ShowArray(gameField);
 }
