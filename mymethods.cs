@@ -4,6 +4,13 @@ namespace myNamespace
 {
     public class myTetro
     {
+        // Game field
+        static int[,] field = new int[15, 15];
+        int[,] currentFigure = GetGameFigure();
+        // Стартовая позиция для фигуры
+        int coordinateX = field.GetLength(1) / 2 - 2;
+        int coordinateY = 0;
+
         // Get game figures
         public static int[,] GetGameFigure()
         {
@@ -22,7 +29,8 @@ namespace myNamespace
 
         public static void ShowArray(int[,] inputArray)
         {
-            Console.Clear();
+            //Console.Clear();
+            Console.SetCursorPosition(0, 0);
             for (int i = 1; i < inputArray.GetLength(0); i++)
             {
                 Console.Write("|");
@@ -74,6 +82,7 @@ namespace myNamespace
 
         public static bool FigureCanRotate(int[,] field, int[,] figure, int cX, int cY)
         {
+
             HideFigure(field, figure, cX, cY);
             figure = RotateFigure(figure);
             // Если при повороте фигуры она выходит за границы поля
@@ -104,6 +113,59 @@ namespace myNamespace
             return innercki;
         }
         */
+
+        public static int[] MoveOrRotateFigure(int[,] field, int[,] figure, int cX, int cY)
+        {
+            int[] tempArray = new int[2];
+
+            do
+            {
+
+                ConsoleKeyInfo cki = new ConsoleKeyInfo();
+
+                cki = Console.ReadKey(true);
+
+                switch (cki.Key)
+                {
+                    case ConsoleKey.LeftArrow:
+                        {
+                            if (myTetro.FigureCanMove(field, figure, cX, cY, "left"))
+                            {
+                                myTetro.HideFigure(field, figure, cX, cY);
+                                cX--;
+                                myTetro.ShowFigure(field, figure, cX, cY);
+                            }
+                            break;
+                        }
+                    case ConsoleKey.RightArrow:
+                        {
+                            if (myTetro.FigureCanMove(field, figure, cX, cY, "right"))
+                            {
+                                myTetro.HideFigure(field, figure, cX, cY);
+                                cX++;
+                                myTetro.ShowFigure(field, figure, cX, cY);
+                            }
+                            break;
+                        }
+                    case ConsoleKey.UpArrow:
+                        {
+                            if (myTetro.FigureCanRotate(field, figure, cX, cY))
+                            {
+                                myTetro.HideFigure(field, figure, cX, cY);
+                                figure = myTetro.RotateFigure(figure);
+                                myTetro.ShowFigure(field, figure, cX, cY);
+                            }
+                            break;
+                        }
+                    default: break;
+                }
+                tempArray[0] = cX;
+                tempArray[1] = cY;
+            } while (true);
+
+
+            //return tempArray;
+        }
 
         public static bool FigureCanMove(int[,] field, int[,] figure, int cX, int cY, string direct)
         {
@@ -172,7 +234,7 @@ namespace myNamespace
                             for (int j = 0; j < figure.GetLength(1); j++)
                             {
                                 if (cY + figure.GetLength(0) < field.GetLength(0) &&    // Из-за шестерки
-                                        figure[i, j] * field[cY + i + 1, cX + j] != 0) 
+                                        figure[i, j] * field[cY + i + 1, cX + j] != 0)
                                 {
                                     ShowFigure(field, figure, cX, cY);
                                     return false;
@@ -184,5 +246,36 @@ namespace myNamespace
             }
             return true;
         }
+
+        public async void MoveDown()
+        {
+            while (myTetro.FigureCanMove(field, currentFigure, coordinateX, coordinateY, "down"))
+            {
+                var moveOrRotateTask = Task<int[]>.Run(() => myTetro.MoveOrRotateFigure(field, currentFigure, coordinateX, coordinateY));
+                await Task.Delay(500);
+                //moveOrRotateTask.
+                //coordinateX = moveOrRotateTask.Result[0];
+                //coordinateY = moveOrRotateTask.Result[1];
+                // ConsoleKeyInfo cki = new ConsoleKeyInfo();
+                //var consoleKeyTask = Task<ConsoleKeyInfo>.Run(() => myTetro.MonitorKeypress());
+                //cki = consoleKeyTask.Result;
+
+                // Если фигура сдвинулась по горизонтали, проверяем может ли она двигаться вниз
+                // если нет, завершаем итерацию
+                if (!myTetro.FigureCanMove(field, currentFigure, coordinateX, coordinateY, "down")) continue;
+
+                // Затираем фигуру
+                myTetro.HideFigure(field, currentFigure, coordinateX, coordinateY);
+
+                // Рисуем с новыми координатами
+                coordinateY++;
+                myTetro.ShowFigure(field, currentFigure, coordinateX, coordinateY);
+
+                myTetro.ShowArray(field);
+            }
+        }
+
+
+
     }
 }
