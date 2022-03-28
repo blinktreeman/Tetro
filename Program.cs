@@ -10,14 +10,17 @@ myTetro.ShowPlayground(gameField.GetLength(1), gameField.GetLength(0));
 myTetro.ShowResult(0, gameField.GetLength(0));
 
 int rowsComplete = 0;
+int coordinateX = gameField.GetLength(1) / 2 - 2;
+int coordinateY = 0;
+int[,] currentFigure = new int[2, 2];
 
-for (int k = 0; k < 50; k++)
+do
 {
     // Стартовая позиция для фигуры
-    int coordinateX = gameField.GetLength(1) / 2 - 2;
-    int coordinateY = 0;
+    coordinateX = gameField.GetLength(1) / 2 - 2;
+    coordinateY = 0;
     // Получаем случайную фигуру
-    int[,] currentFigure = myTetro.GetGameFigure();
+    currentFigure = myTetro.GetGameFigure();
 
     // Перемещаем вниз
     while (myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down"))
@@ -94,4 +97,4 @@ for (int k = 0; k < 50; k++)
         else myTetro.ShowResult(++rowsComplete, gameField.GetLength(0));
     }
     myTetro.ShowArray(gameField);
-}
+} while (!(!myTetro.FigureCanMove(gameField, currentFigure, coordinateX, coordinateY, "down") & coordinateY == 0));
