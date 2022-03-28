@@ -136,7 +136,8 @@ namespace myNamespace
                             // Из-за шестерки
                             for (int i = 0; i < figure.GetLength(0); i++)
                             {
-                                if (field[cY + i, cX + figure.GetLength(1) - 1] != 0) return false;
+                                //if (field[cY + i, cX + figure.GetLength(1) - 1] != 0) return false;
+                                if (figure[i, figure.GetLength(1) - 1] != 0) return false;
                             }
                         }
                         for (int i = 0; i < figure.GetLength(0); i++)
