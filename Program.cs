@@ -10,7 +10,7 @@ myTetro.ShowPlayground(gameField.GetLength(1), gameField.GetLength(0));
 myTetro.ShowResult(0, gameField.GetLength(0));
 
 int rowsComplete = 0;
-int coordinateX = gameField.GetLength(1) / 2 - 2;
+int coordinateX = 0;
 int coordinateY = 0;
 int[,] currentFigure = new int[2, 2];
 
